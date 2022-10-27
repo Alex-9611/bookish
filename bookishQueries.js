@@ -2,6 +2,7 @@ import pkg from "pg";
 const { Client } = pkg;
 import { Book } from "./Book.js";
 
+
 const client = new Client({
     user: "bookish",
     host: "localhost",
@@ -11,16 +12,14 @@ const client = new Client({
 });
 client.connect();
 
-export async function queryForBooks() {
+export async function queryForBookList() {
     const books = await client.query("SELECT * FROM public.books");
     const bookList = await constructBookList(books.rows);
     
     return bookList;
 }
-
-async function constructBookList(bookData) {
+ async function constructBookList(bookData) {
     const bookList = [];
-    console.log(bookData);
     for (let i = 0; i < bookData.length; i++) {
         const newBook = new Book(bookData[i].bookid, bookData[i].title, bookData[i].author, bookData[i].isbn);
         bookList.push(newBook);
