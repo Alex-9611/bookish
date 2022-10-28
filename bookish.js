@@ -2,31 +2,13 @@ import express from "express";
 import bodyParser from "body-parser";
 import { queryForBookList, authenticateLoginInfo } from "./bookishQueries.js";
 import jwt from "jsonwebtoken";
+import { exportedJWTStrat } from "./passport.js";
 
 import passport from "passport";
 import passportJWT from "passport-jwt";
-const JwtStrategy = passportJWT.Strategy;
-const ExtractJwt = passportJWT.ExtractJwt;
 
-var opts = {};
-opts.jwtFromRequest = ExtractJwt.fromUrlQueryParameter("encryptedKey");
-// opts.secretOrKeyProvider = secretOrKeyProvider(request, rawJwtToken, done);
-opts.secretOrKey = "secret";
-passport.use(
-    new JwtStrategy(opts, function (jwt_payload, done) {
-        User.findOne({ id: jwt_payload.sub }, function (err, user) {
-            if (err) {
-                return done(err, false);
-            }
-            if (user) {
-                return done(null, user);
-            } else {
-                return done(null, false);
-                // or you could create a new account
-            }
-        });
-    })
-);
+
+passport.use(exportedJWTStrat)
 
 const app = express();
 const port = 3000;
@@ -36,17 +18,22 @@ app.use(bodyParser.json());
 app.use(express.static("frontend"));
 
 app.get("/books", passport.authenticate("jwt", { session: false }), (req, res) => {
-    queryForBookList().then((bookList) => {
-        res.send(bookList);
-    });
+    console.log("username : " + req.body.username);
+    console.log("password : " + req.body.password);
+    if (authenticateLoginInfo(req.body.username, req.body.password)) {
+        queryForBookList().then((bookList) => {
+            res.send(bookList);
+        });
+    } else {
+        res.send('Please login with a valid username and password')
+    }
 });
-
-
 
 app.post("/login", (req, res) => {
     console.log("POST request received at /login");
 
-    authenticateLoginInfo(req.body.username, req.body.password).then((authenticationStatus) => {
+    authenticateLoginInfo(req.body.username, req.body.password)
+    .then((authenticationStatus) => {
         if (authenticationStatus === true) {
             console.log("true");
             const token = jwt.sign({ username: req.body.username, password: req.body.password }, "secret");
