@@ -16,6 +16,7 @@ async function userInput(username, password) {
     if (responseText.length === 169) {
         console.log(responseText);
         alert("Your encrypted key is : " + responseText);
+        response.send(responseText)
     } else {
         alert(responseText);
     }
