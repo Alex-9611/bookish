@@ -8,12 +8,13 @@
     </head>
     <body>
         <h1>Please login</h1>
-        <form action="javascript:void(0)" onsubmit=userInput()>
+        <form action="javascript:void(0)" onsubmit= "userInput(this.username.value, this.password.value);">
             Username:<br>
             <input type="text" name="username">
             <br> Password: <br>
             <input type="password" name="password">
             <input type="submit" value="Submit">
         </form>
+    <div id="results"></div>
     </body>
 </html>

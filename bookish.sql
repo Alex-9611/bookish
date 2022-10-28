@@ -21,3 +21,6 @@ CREATE TABLE rentals (
 
 INSERT INTO books (title, author, isbn)
 VALUES ('Wild Swans', 'Jung Chang', '0006374921'), ('The Secret Life of Trees','Colin Tudge','0141012933');
+
+INSERT INTO userinfo (name, password)
+VALUES ('userName', 'testPassword');
