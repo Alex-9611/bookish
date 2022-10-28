@@ -1,11 +1,10 @@
 async function userInput(username, password) {
-    alert(username + password);
     const userInfo_object = {
         username: username,
         password: password,
     };
 
-    const response = await fetch("/authentication", {
+    const response = await fetch("/login", {
         method: "POST",
         headers: {
             Accept: "application/json",
@@ -13,6 +12,11 @@ async function userInput(username, password) {
         },
         body: JSON.stringify({ username: username, password: password }),
     });
-    const blah = await response.text();
-    alert('Your encrypted key is : ' + blah)
+    const responseText = await response.text();
+    if (responseText.length === 169) {
+        console.log(responseText);
+        alert("Your encrypted key is : " + responseText);
+    } else {
+        alert(responseText);
+    }
 }
